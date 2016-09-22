@@ -5,41 +5,67 @@
     <meta charset="utf-8" />
     <title>Assignment 1 - D3 Lab</title>
     <meta author="Xiaoyan Wang" netID="xw1108" />
-    <script src="https://d3js.org/d3.v4.min.js" charset="utf-8"></script>
-    
+    <style type="text/css">
+        html,
+        body {
+            margin: 0px;
+            padding: 0px;
+        }
+        div.topbar {
+            padding: 5px;
+            width: 100%;
+            background-color: #000000;
+            color: #ffffff;
+            font-size: 1.6em;
+            font-weight: bold;
+        }
+        div.content{
+            padding: 10px;
+        }
+        
+        ul {
+            list-style-type: none;
+            padding: 0px;
+        }
+    </style>
+
 </head>
 
 <body>
-    <h1>Countries</h1>
-    <div>
-        <div>Name
-            <input id="countryInput" type="text" placeholder="Please input a country"/>
-            <button onclick="addCountry();">Add a Country</button>
+    <div class="topbar">Gapminder - Wealth and Health</div>
+    <div class="content">
+        <h2>Countries</h2>
+        <div>
+            <div>Name
+                <input id="countryInput" type="text" placeholder="Please input a country" />
+                <button onclick="addCountry();">Add a Country</button>
+            </div>
+            <hr />
+            <ul id="countryList"></ul>
         </div>
-        <hr />
-        <ul id="countryList"></ul>
     </div>
+
 </body>
 <script type="text/javascript">
-    var countryList = d3.select("#countryList");
+    var countryList = document.getElementById("countryList");
     var countries = ["China"];
     
-    function render() {
-        countryList.selectAll("li").data(countries).enter()
-                .append("li").text(function(d) {return d}); 
+    for(var i = 0; i < countries.length; i ++){
+        var item = document.createElement("li");
+        item.innerHTML = countries[i];
+        countryList.appendChild(item);
     }
-            
-    
-    function addCountry() {
-        var newCountry = d3.select("#countryInput").node().value;
-        if(newCountry){
-            d3.select("#countryInput").node().value = "";
-            countries.push(newCountry);
-        }
-        
-        render();
-    }
-    render();
-</script>
-</html>
 
+    function addCountry() {
+        var newCountry = document.getElementById("countryInput");
+        if(newCountry.value){
+            var item = document.createElement("li");
+            item.innerHTML = newCountry.value;
+            countryList.appendChild(item);
+            countries.push(newCountry.value);
+        }
+        newCountry.value = "";
+    }
+</script>
+
+</html>
