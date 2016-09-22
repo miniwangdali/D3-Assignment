@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Assignment 1 - D3 Lab</title>
+    <meta author="Xiaoyan Wang" netID="xw1108" />
+    <script src="https://d3js.org/d3.v4.min.js" charset="utf-8"></script>
+    
+</head>
+
+<body>
+    <h1>Countries</h1>
+    <div>
+        <div>Name
+            <input id="countryInput" type="text" placeholder="Please input a country"/>
+            <button onclick="addCountry();">Add a Country</button>
+        </div>
+        <hr />
+        <ul id="countryList"></ul>
+    </div>
+</body>
+<script type="text/javascript">
+    var countryList = d3.select("#countryList");
+    var countries = ["China"];
+    
+    function render() {
+        countryList.selectAll("li").data(countries).enter()
+                .append("li").text(function(d) {return d}); 
+    }
+            
+    
+    function addCountry() {
+        var newCountry = d3.select("#countryInput").node().value;
+        if(newCountry){
+            d3.select("#countryInput").node().value = "";
+            countries.push(newCountry);
+        }
+        
+        render();
+    }
+    render();
+</script>
+</html>
+
