@@ -1,4 +1,4 @@
 # Description
-The page allows the user to add new countries to the list after clicking on add button. The system should include the country in the country list.
+Once the page loads, it should show a list with all countries in the data in a list. country list.
 # Result
-![Result](https://github.com/miniwangdali/D3-Assignment/blob/master/Assignment1/result.gif?raw=true)
+![Result](https://github.com/miniwangdali/D3-Assignment/blob/master/Assignment2/result.png?raw=true)
