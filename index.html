@@ -3,68 +3,85 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>Assignment 1 - D3 Lab</title>
+    <title>Assignment Homepage- D3 Lab</title>
     <meta author="Xiaoyan Wang" netID="xw1108" />
     <style type="text/css">
-        html,
-        body {
-            margin: 0px;
-            padding: 0px;
+        html, body{
+            margin: 0;
+            padding: 0;
+            background-color: #E0F2F1;
         }
-        div.topbar {
-            padding: 5px;
-            width: 100%;
-            background-color: #000000;
-            color: #ffffff;
-            font-size: 1.6em;
-            font-weight: bold;
+        div.header{
+            margin: 5%;
+            text-align: center;
+            color: #009688;
+            font-size: 3em;
         }
         div.content{
             padding: 10px;
+            background-color: #009688;
+            border: solid 0px #ffffff;
+            border-radius: 10px;
+            width: 37%;
+            height: 100%;
+            color: #E0F2F1;
         }
-        
-        ul {
+        div.content ul{
             list-style-type: none;
-            padding: 0px;
+            padding: 0;
+
+        }
+        div.content ul li{
+            border: solid 0px #ffffff;
+            border-radius: 5px;
+            margin: 10px 30% 10px 30%;
+            padding: 5px;
+            text-align: center;
+            transition: color 0.3s, background-color 0.5s;
+            -webkit-transition: color 0.3s, background-color 0.5s;
+        }
+        div.content ul li:hover{
+            background-color: #E0F2F1;
+            color: #009688;
+        }
+        a{
+            text-decoration: none;
+            color: #E0F2F1;
+        }
+        div.footer{
+            position: absolute;
+            padding: 10px 0 10px 0;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+            color: #009688;
+            font-size: 1em;
+            background-color: #E0F2F1;
         }
     </style>
 
 </head>
 
-<body>
-    <div class="topbar">Gapminder - Wealth and Health</div>
-    <div class="content">
-        <h2>Countries</h2>
-        <div>
-            <div>Name
-                <input id="countryInput" type="text" placeholder="Please input a country" />
-                <button onclick="addCountry();">Add a Country</button>
-            </div>
-            <hr />
-            <ul id="countryList"></ul>
-        </div>
+<body onload="init();">
+    <div class="header">
+        Assignment Homepage - D3 Lab
     </div>
-
+    <div class="content">
+        <ul>
+            <a href="https://github.com/miniwangdali/D3-Assignment/tree/master/Assignment1"><li>D3 Assignment1
+            </li></a>
+            <a href="https://github.com/miniwangdali/D3-Assignment/tree/master/Assignment2"><li>D3 Assignment2
+            </li></a>
+        </ul>
+    </div>
+    <div class="footer">
+        Made by Xiaoyan Wang. e-mail: xw1108@nyu.edu
+    </div>
 </body>
-<script type="text/javascript">
-    var countryList = document.getElementById("countryList");
-    var countries = ["China"];
-    
-    for(var i = 0; i < countries.length; i ++){
-        var item = document.createElement("li");
-        item.innerHTML = countries[i];
-        countryList.appendChild(item);
-    }
-
-    function addCountry() {
-        var newCountry = document.getElementById("countryInput");
-        if(newCountry.value){
-            var item = document.createElement("li");
-            item.innerHTML = newCountry.value;
-            countryList.appendChild(item);
-            countries.push(newCountry.value);
-        }
-        newCountry.value = "";
+<script>
+    function init(){
+        var content = document.getElementsByClassName("content")[0];
+        content.style.marginLeft = window.innerWidth * (0.5 - 0.37 / 2.0) + "px";  
     }
 </script>
 
