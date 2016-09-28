@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Assignment 2 - D3 Lab</title>
+    <meta author="Xiaoyan Wang" netID="xw1108" />
+    <script type="text/javascript" src="https://d3js.org/d3.v4.min.js"></script>
+    <style type="text/css">
+        html,
+        body {
+            margin: 0px;
+            padding: 0px;
+        }
+        div.topbar {
+            padding: 5px;
+            width: 100%;
+            background-color: #000000;
+            color: #ffffff;
+            font-size: 1.6em;
+            font-weight: bold;
+        }
+        div.content{
+            padding: 10px;
+        }
+        
+        ul {
+            list-style-type: none;
+            padding: 0px;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="topbar">Gapminder - Wealth and Health</div>
+    <div class="content">
+        <h2>Countries</h2>
+        <div>
+            <ul id="countryList"></ul>
+        </div>
+    </div>
+
+</body>
+<script type="text/javascript">
+    var unorderedList = d3.select("#countryList");
+    console.log(unorderedList);
+    var dataList = [];
+    d3.json("https://raw.githubusercontent.com/CristianFelix/infoviz/master/gapminder.json", function(error, result){
+        dataList = result;
+        render();
+    });
+
+    function render(){
+        var item = unorderedList.selectAll("li").data(dataList);
+        item.enter().append("li").text(function(value){
+            return value.name;
+        });
+
+    }
+</script>
+
+</html>
