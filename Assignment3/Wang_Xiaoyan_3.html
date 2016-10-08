@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Assignment 3 - D3 Lab</title>
+    <meta author="Xiaoyan Wang" netID="xw1108" />
+    <script type="text/javascript" src="https://d3js.org/d3.v3.min.js"></script>
+    <style type="text/css">
+        html{
+            margin: 0px;
+            padding: 0px;
+            overflow-x: hidden;
+        }
+        body {
+            margin: 0px;
+            padding: 0px;
+        }
+        div.topbar {
+            margin: 0;
+            padding: 5px;
+            width: 100%;
+            background-color: #000000;
+            color: #ffffff;
+            font-size: 1.6em;
+            font-weight: bold;
+        }
+        div.content{
+            padding: 10px;
+        }
+        
+        div.content ul {
+            list-style-type: none;
+            padding: 0;
+            float: left;
+        }
+        div.content svg {
+            float: left;
+        }
+        .clearframe{
+            clear: both;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="topbar">Gapminder - Wealth and Health of Nations</div>
+    <div class="content">
+        <h2>Countries</h2>
+        <div>
+            <ul id="countryList"></ul>
+            <svg id="chart" width="800" height="600">
+                <g id="dataPoints">
+                    
+                </g>
+            </svg>
+            <div class="clearframe"></div>
+        </div>
+    </div>
+
+</body>
+<script type="text/javascript">
+    var unorderedList = d3.select("#countryList");
+    var dataPoints = d3.select("#dataPoints");
+    var dataList = [];
+    var chart = d3.select("#chart");
+    var margin = { top: 30, right: 30, bottom: 30, left: 30};
+
+    var innerWidth = chart.attr("width") - margin.left - margin.right;
+    var innerHeight = chart.attr("height") - margin.top - margin.bottom;
+
+    var xScale = d3.scale.linear().range([margin.left, innerWidth + margin.left]);
+    var yScale = d3.scale.linear().range([innerHeight + margin.top, margin.top]);
+    var sizeScale = d3.scale.pow().exponent(0.4).range([3, 28]);
+    var colorScale = d3.scale.category20();
+
+    d3.json("https://raw.githubusercontent.com/CristianFelix/infoviz/master/Week%203/newData.json", function(error, result){
+        dataList = result.filter(function(value) {return value.income[2008] != undefined 
+                                                        && value.lifeExpectancy[2008] != undefined
+                                                        && value.population[2008] != undefined; });
+        render();
+    });
+
+    function render(){
+        xScale.domain(d3.extent(dataList, function(value) { return value.income[2008] ; }));
+        yScale.domain(d3.extent(dataList, function(value) { return value.lifeExpectancy[2008]; }));
+        sizeScale.domain(d3.extent(dataList, function(value) { return value.population[2008]; }))
+
+        var item = unorderedList.selectAll("li").data(dataList);
+        item.enter().append("li").text(function(value){
+            return value.name;
+        });
+        
+        var dots = dataPoints.selectAll("circle").data(dataList);
+        dots.enter().append("circle")
+                            .attr("r", function(v, i) { return sizeScale(v.population[2008]); })
+                            .attr("cx", function(v, i) { return xScale(v.income[2008]); })
+                            .attr("cy", function(v, i) { return yScale(v.lifeExpectancy[2008]); })
+                            .attr("fill", function(v, i) { return colorScale(i); })
+                            .attr("opacity", 0.7);
+
+
+    }
+</script>
+
+</html>
