@@ -1,6 +1,8 @@
 # Description
 The page should show a simple scatterplot of the Gapminder data for the year of 2008.
+
 Use the new data: https://raw.githubusercontent.com/CristianFelix/infoviz/master/Week%203/newData.json
+
 You have to:
 - Add a SVG Element to the page
 - Draw one dot for each country
