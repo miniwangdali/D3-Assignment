@@ -4,8 +4,8 @@
 Use the new data: https://raw.githubusercontent.com/CristianFelix/infoviz/master/Week%203/newData.json
 
 You have to:
-- Review and organize your code
-- Add Y and X axes
+- Review and organize your code.
+- Add Y and X axes.
 - Map the size of the bubble using the equation r = sqrt(area/PI) where area is the result of your size scale.
 
 # Result
