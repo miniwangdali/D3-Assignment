@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Assignment 5 - D3 Lab</title>
+    <meta author="Xiaoyan Wang" netID="xw1108" />
+    <script type="text/javascript" src="https://d3js.org/d3.v3.min.js"></script>
+    <style type="text/css">
+        html {
+            margin: 0px;
+            padding: 0px;
+            overflow-x: hidden;
+        }
+        
+        body {
+            margin: 0px;
+            padding: 0px;
+        }
+        
+        div.topbar {
+            margin: 0;
+            padding: 5px;
+            width: 100%;
+            background-color: #000000;
+            color: #ffffff;
+            font-size: 1.6em;
+            font-weight: bold;
+        }
+        
+        div.content {
+            padding: 10px;
+        }
+        
+        div.content ul {
+            list-style-type: none;
+            padding: 0;
+            float: left;
+        }
+        
+        div.content svg g path.domain {
+            fill: none;
+            stroke: #000000;
+        }
+        
+        div.content svg g .tick {
+            font-size: 0.8em;
+        }
+        
+        div.content svg g .tick line {
+            stroke: #e5e5e5;
+        }
+        
+        .tooltip {
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border: 1px solid #000000;
+            border-radius: 5px;
+            margin: 0;
+            padding: 5px;
+            visibility: hidden;
+            opacity: 0;
+            transition: all 0.3s;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="topbar">Gapminder - Wealth and Health of Nations</div>
+    <div class="content">
+        <div>
+            <ul id="countryList"></ul>
+            <svg id="chart" width="800" height="600">
+            </svg>
+
+        </div>
+    </div>
+    <input id="yearSlider" type="range" min="1900" max="2009" onchange="setYear(this.value)" value="2008" style="width: 800px;"
+    />
+    <div id="tooltip" class="tooltip">Tooltip</div>
+</body>
+<script type="text/javascript">
+    var unorderedList = d3.select("#countryList");
+    var dataList = [];
+    var year = 2008;
+    var chart = d3.select("#chart");
+    var margin = { top: 30, right: 30, bottom: 30, left: 30};
+    var innerWidth = chart.attr("width") - margin.left - margin.right;
+    var innerHeight = chart.attr("height") - margin.top - margin.bottom;
+
+    var yearLabel = chart.append("text").style({"font-size": "5em", fill: "#b5b5b5"}).attr("dx", 70).attr("dy", 120);
+    var xAxisGroup = chart.append("g").attr("transform", "translate(" + margin.left + ", " + (innerHeight + margin.top) + ")");
+    var yAxisGroup = chart.append("g").attr("transform", "translate(" + margin.left + ", " + margin.top + ")");
+    var dataPoints = chart.append("g").attr("transform", "translate(" + margin.left + ", " + margin.top + ")");
+
+    d3.json("https://raw.githubusercontent.com/CristianFelix/infoviz/master/Week%203/newData.json", function(error, result){
+        dataList = result;
+        render();
+    });
+
+    function highlight(name){
+        dataPoints.selectAll("circle").style("stroke", function(v, i){
+            return v.name == name ? "#000000" : undefined;
+        });
+        unorderedList.selectAll("li")
+            .style("background-color", function(v, i){
+                return v.name == name ? "#000000" : undefined;
+            })
+            .style("color", function(v, i){
+                return v.name == name ? "#ffffff" : undefined;
+            });
+    }
+    function unHighlight(){
+        dataPoints.selectAll("circle").style({stroke: undefined});
+        unorderedList.selectAll("li")
+            .style("background-color", undefined)
+            .style("color", undefined);
+    }
+
+    function setYear(newYear){
+        year = newYear;
+        render();
+    }
+
+    function renderList(data){
+        var item = unorderedList.selectAll("li").data(data, function(v) { return v.name; });
+        item.enter().append("li").text(function(value){
+            return value.name;
+        })
+        .on("mouseenter", function(v, i) {
+            highlight(v.name);
+        })
+        .on("mouseleave", function(v, i){
+            unHighlight();
+        });
+        item.exit().remove();
+    }
+
+    function renderChart(data){
+        var xScale = d3.scale.linear().range([0, innerWidth]);
+        var yScale = d3.scale.linear().range([innerHeight, 0]);
+        var sizeScale = d3.scale.linear().range([200, 2000]);
+        var colorScale = d3.scale.category10();
+        var xAxis = d3.svg.axis()
+                            .tickSize(-innerHeight)
+                            .scale(xScale)
+                            .orient("bottom")
+                            .tickFormat(function(v) {
+                                var prefix = d3.formatPrefix(v);
+                                return prefix.scale(v) + prefix.symbol;
+                            });
+        var yAxis = d3.svg.axis()
+                            .tickSize(-innerWidth)
+                            .scale(yScale)
+                            .orient("left");
+        xScale.domain([-1000, d3.max(dataList, function(value) { return value.income[year] ; })]);
+        yScale.domain(d3.extent(dataList, function(value) { return value.lifeExpectancy[year]; }));
+        sizeScale.domain(d3.extent(dataList, function(value) { return value.population[year]; }))
+
+        xAxisGroup.call(xAxis);
+        yAxisGroup.call(yAxis);
+
+        var dots = dataPoints.selectAll("circle").data(data, function(v) { return v.name; });
+        dots.enter().append("circle")
+                    .attr("opacity", 0.7)
+                    .on("mouseenter", function(v, i){
+                        highlight(v.name);
+                        d3.select("#tooltip").style({
+                            visibility: "visible",
+                            top: d3.event.clientY + "px",
+                            left: d3.event.clientX + "px",
+                            opacity: 1
+                        }).text(v.name);
+                    })
+                    .on("mouseleave", function(v, i){
+                        unHighlight();
+                        d3.select("#tooltip").style({
+                            visibility: "hidden",
+                            opacity: 0
+                        });
+                    });
+        dots.exit().remove();
+        dots.transition()
+                    .attr("r", function(v, i) { return Math.sqrt(sizeScale(v.population[year]) / Math.PI); })
+                    .attr("cx", function(v, i) { return xScale(v.income[year]); })
+                    .attr("cy", function(v, i) { return yScale(v.lifeExpectancy[year]); })
+                    .attr("fill", function(v, i) { return colorScale(v.region); })
+    }
+
+    function render(){
+        var filteredData = dataList.filter(function(value) {return value.income[year] && value.lifeExpectancy[year] && value.population[year]; });
+        filteredData.sort(function(v1, v2) { return d3.ascending(v1.name, v2.name); });
+        yearLabel.text(year);
+        renderList(filteredData);
+        renderChart(filteredData);
+    }
+</script>
+
+</html>
